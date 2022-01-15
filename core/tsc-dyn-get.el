@@ -70,11 +70,12 @@ this to nil."
 (defun tsc-dyn-get--ext ()
   "Return the dynamic module extension, which is system-dependent."
   (pcase system-type
-    ('windows-nt "dll")
-    ('darwin "dylib")
-    ((or 'gnu 'gnu/linux 'gnu/kfreebsd) "so")
+    ('windows-nt "x86_64-pc-windows-msvc.dll")
+    ((guard (and (eq system-type 'darwin) (string= (car (split-string system-configuration "-")) "aarch64"))) "aarch64-apple-darwin.dylib")
+    ('darwin "x86_64-apple-darwin.dylib")
+    ((or 'gnu 'gnu/linux 'gnu/kfreebsd) "x86_64-unknown-linux-gnu.so")
     ((or 'ms-dos 'cygwin) (error "Unsupported system-type %s" system-type))
-    (_ "so")))
+    (_ "x86_64-unknown-linux-gnu.so")))
 
 (defun tsc-dyn-get--file ()
   "Return the dynamic module filename, which is system-dependent."
